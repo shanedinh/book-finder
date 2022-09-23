@@ -10,6 +10,7 @@ import {
 } from "react-bootstrap";
 import { useMutation } from "@apollo/client";
 import { SAVE_BOOK } from "../utils/mutations";
+import { GET_ME } from "../utils/queries";
 
 import Auth from "../utils/auth";
 import { searchGoogleBooks } from "../utils/API";
@@ -24,7 +25,26 @@ const SearchBooks = () => {
   // create state to hold saved bookId values
   const [savedBookIds, setSavedBookIds] = useState(getSavedBookIds());
 
-  const [saveBook] = useMutation(SAVE_BOOK);
+  const [saveBook] = useMutation(SAVE_BOOK, {
+    update(cache, { data: { saveBook } }) {
+      try {
+        // update me array's cache
+        const { me } = cache.readQuery({ query: GET_ME });
+        cache.writeQuery({
+          query: GET_ME,
+          data: { me: { ...me, books: [...me.books, saveBook] } },
+        });
+      } catch (e) {
+        console.warn("First book saved.");
+      }
+
+      const { books } = cache.readQuery({ query: GET_ME });
+      cache.writeQuery({
+        query: GET_ME,
+        data: { books: [saveBook, ...books] },
+      });
+    },
+  });
 
   // set up useEffect hook to save `savedBookIds` list to localStorage on component unmount
   // learn more here: https://reactjs.org/docs/hooks-effect.html#effects-with-cleanup
