@@ -10,7 +10,7 @@ import {
   Card,
   CardColumns,
 } from "react-bootstrap";
-import { GET_ME } from "../utils/queries";
+import { QUERY_ME } from "../utils/queries";
 import Auth from "../utils/auth";
 import { searchGoogleBooks } from "../utils/API";
 import { saveBookIds, getSavedBookIds } from "../utils/localStorage";
@@ -27,9 +27,9 @@ const SearchBooks = () => {
   const [saveBook, { error }] = useMutation(SAVE_BOOK, {
     update(cache, { data: { saveBook } }) {
       // update me array's cache
-      const { me } = cache.readQuery({ query: GET_ME });
+      const { me } = cache.readQuery({ query: QUERY_ME });
       cache.writeQuery({
-        query: GET_ME,
+        query: QUERY_ME,
         data: { me: { ...me, savedBooks: [...me.savedBooks, saveBook] } },
       });
     },
