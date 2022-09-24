@@ -15,14 +15,10 @@ import { useMutation, useQuery } from "@apollo/client";
 
 const SavedBooks = () => {
   // retrieve my data
-  const [userData, setUserData] = useState({});
-  const { data } = useQuery(GET_ME, {
-    oncompleted: () => {
-      setUserData(data.me);
-    },
-  });
+  const { data, loading } = useQuery(GET_ME);
+  const userData = data?.me || {};
 
-  const userDataLength = Object.keys(userData).length;
+  console.log(data, loading);
 
   const [removeBook, { error }] = useMutation(REMOVE_BOOK);
 
@@ -43,7 +39,6 @@ const SavedBooks = () => {
         throw new Error("something went wrong!");
       }
 
-      setUserData(updatedData.data.removeBook);
       // upon success, remove book's id from localStorage
       removeBookId(bookId);
     } catch (err) {
@@ -52,7 +47,7 @@ const SavedBooks = () => {
   };
 
   // if data isn't here yet, say so
-  if (!userDataLength) {
+  if (loading) {
     return <h2>LOADING...</h2>;
   }
 
@@ -65,16 +60,16 @@ const SavedBooks = () => {
       </Jumbotron>
       <Container>
         <h2>
-          {userDataLength
-            ? `Viewing ${userData.savedBooks.length} saved ${
-                userData.savedBooks.length === 1 ? "book" : "books"
+          {userData.savedBooks?.length
+            ? `Viewing ${userData.savedBooks?.length} saved ${
+                userData.savedBooks?.length === 1 ? "book" : "books"
               }:`
             : "You have no saved books!"}
         </h2>
         <CardColumns>
-          {userData.savedBooks.map((book) => {
+          {userData.savedBooks?.map((book) => {
             return (
-              <Card key={book.bookId} border="dark">
+              <Card key={book?.bookId} border="dark">
                 {book.image ? (
                   <Card.Img
                     src={book.image}
