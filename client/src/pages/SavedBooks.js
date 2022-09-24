@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Jumbotron,
   Container,
@@ -31,7 +31,7 @@ const SavedBooks = () => {
     }
 
     try {
-      const updatedData = await removeBook({
+      await removeBook({
         variables: { bookId: bookId },
       });
 
