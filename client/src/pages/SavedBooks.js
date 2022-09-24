@@ -8,7 +8,7 @@ import {
 } from "react-bootstrap";
 
 import { REMOVE_BOOK } from "../utils/mutations";
-import { QUERY_ME } from "../utils/queries";
+import { GET_ME } from "../utils/queries";
 import Auth from "../utils/auth";
 import { removeBookId } from "../utils/localStorage";
 import { useMutation, useQuery } from "@apollo/client";
@@ -16,7 +16,7 @@ import { useMutation, useQuery } from "@apollo/client";
 const SavedBooks = () => {
   // retrieve my data
   const [userData, setUserData] = useState({});
-  const { data } = useQuery(QUERY_ME, {
+  const { data } = useQuery(GET_ME, {
     oncompleted: () => {
       setUserData(data.me);
     },
