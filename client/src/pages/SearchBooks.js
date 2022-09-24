@@ -25,23 +25,13 @@ const SearchBooks = () => {
   // create state to hold saved bookId values
   const [savedBookIds, setSavedBookIds] = useState(getSavedBookIds());
 
-  const [saveBook] = useMutation(SAVE_BOOK, {
+  const [saveBook, { error }] = useMutation(SAVE_BOOK, {
     update(cache, { data: { saveBook } }) {
-      try {
-        // update me array's cache
-        const { me } = cache.readQuery({ query: GET_ME });
-        cache.writeQuery({
-          query: GET_ME,
-          data: { me: { ...me, books: [...me.books, saveBook] } },
-        });
-      } catch (e) {
-        console.warn("First book saved.");
-      }
-
-      const { books } = cache.readQuery({ query: GET_ME });
+      // update me array's cache
+      const { me } = cache.readQuery({ query: GET_ME });
       cache.writeQuery({
         query: GET_ME,
-        data: { books: [saveBook, ...books] },
+        data: { me: { ...me, savedBooks: [...me.savedBooks, saveBook] } },
       });
     },
   });
@@ -97,9 +87,11 @@ const SearchBooks = () => {
     }
 
     try {
-      const response = await saveBook(bookToSave, token);
+      await saveBook({
+        variables: { input: bookToSave },
+      });
 
-      if (!response.ok) {
+      if (error) {
         throw new Error("something went wrong!");
       }
 
