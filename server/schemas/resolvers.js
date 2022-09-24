@@ -8,7 +8,7 @@ const resolvers = {
       if (context.user) {
         const userData = await User.findOne({ _id: context.user._id })
           .select("-__v -password")
-          .populate("books");
+          .populate("savedBooks");
 
         return userData;
       }
@@ -23,7 +23,7 @@ const resolvers = {
     user: async (parent, { username }) => {
       return User.findOne({ username })
         .select("-__v -password")
-        .populate("books");
+        .populate("savedBooks");
     },
     // get all books
     books: async (parent, { title }) => {
@@ -58,11 +58,11 @@ const resolvers = {
       const token = signToken(user);
       return { token, user };
     },
-    saveBook: async (parent, { bookId }, context) => {
+    saveBook: async (parent, { input }, context) => {
       if (context.user) {
         const updatedUser = await User.findOneAndUpdate(
-          { _id: context.user_id },
-          { $addToSet: { savedBooks: bookId } },
+          { _id: context.user._id },
+          { $addToSet: { savedBooks: input } },
           { new: true }
         ).populate("savedBooks");
 
@@ -74,13 +74,15 @@ const resolvers = {
     removeBook: async (parent, { bookId }, context) => {
       if (context.user) {
         const updatedUser = await User.findOneAndUpdate(
-          { _id: context.user_id },
+          { _id: context.user._id },
           { $pull: { savedBooks: bookId } },
           { new: true }
         ).populate("savedBooks");
 
         return updatedUser;
       }
+
+      throw new AuthenticationError("You need to be logged in!");
     },
   },
 };

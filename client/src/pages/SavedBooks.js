@@ -14,6 +14,7 @@ import { removeBookId } from "../utils/localStorage";
 import { useMutation, useQuery } from "@apollo/client";
 
 const SavedBooks = () => {
+  // retrieve my data
   const [userData, setUserData] = useState({});
   const { data } = useQuery(GET_ME, {
     oncompleted: () => {
@@ -64,7 +65,7 @@ const SavedBooks = () => {
       </Jumbotron>
       <Container>
         <h2>
-          {userData.length
+          {userDataLength
             ? `Viewing ${userData.savedBooks.length} saved ${
                 userData.savedBooks.length === 1 ? "book" : "books"
               }:`
