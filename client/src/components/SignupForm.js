@@ -12,7 +12,7 @@ const SignupForm = () => {
     password: "",
   });
 
-  const [addUser] = useMutation(ADD_USER);
+  const [addUser, { error }] = useMutation(ADD_USER);
   // set state for form validation
   const [validated] = useState(false);
   // set state for alert
@@ -20,6 +20,7 @@ const SignupForm = () => {
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
+
     setUserFormData({ ...userFormData, [name]: value });
   };
 
@@ -34,19 +35,29 @@ const SignupForm = () => {
     }
 
     try {
-      const response = await addUser(userFormData);
+      const { data } = await addUser({
+        variables: { ...userFormData },
+      });
 
-      if (!response.ok) {
-        throw new Error("something went wrong!");
-      }
-
-      const { token, user } = await response.json();
-      console.log(user);
-      Auth.login(token);
-    } catch (err) {
-      console.error(err);
-      setShowAlert(true);
+      Auth.login(data.addUser.token);
+    } catch (e) {
+      console.error(e);
     }
+
+    // try {
+    //   const response = await addUser(userFormData);
+
+    //   if (!response.ok) {
+    //     throw new Error("something went wrong!");
+    //   }
+
+    //   const { token, user } = await response.json();
+    //   console.log(user);
+    //   Auth.login(token);
+    // } catch (err) {
+    //   console.error(err);
+    //   setShowAlert(true);
+    // }
 
     setUserFormData({
       username: "",
@@ -127,6 +138,7 @@ const SignupForm = () => {
           Submit
         </Button>
       </Form>
+      {error && <div>Signup failed</div>}
     </>
   );
 };
