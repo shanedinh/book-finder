@@ -4,7 +4,7 @@
   "engines": {
     "node": "16.15.1"
   },
-  "description": "",
+  "description": "## Description",
   "main": "server/server.js",
   "scripts": {
     "start": "node server/server.js",
