@@ -27,6 +27,7 @@
   },
   "homepage": "https://github.com/shanedinh/book-finder#readme",
   "dependencies": {
-    "apollo-server-express": "^3.10.2"
+    "apollo-server-express": "^3.10.2",
+    "bcryptjs": "^2.4.3"
   }
 }
