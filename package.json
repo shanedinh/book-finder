@@ -25,5 +25,8 @@
   "bugs": {
     "url": "https://github.com/shanedinh/book-finder/issues"
   },
-  "homepage": "https://github.com/shanedinh/book-finder#readme"
+  "homepage": "https://github.com/shanedinh/book-finder#readme",
+  "dependencies": {
+    "apollo-server-express": "^3.10.2"
+  }
 }
